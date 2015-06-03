@@ -1,0 +1,123 @@
+import java.io.*;
+import java.net.*;
+import java.util.*;
+
+
+public class ChartManageClient {
+	private String host;
+	private Socket socket;
+	private String serverIp = "127.0.0.1";
+	
+	public static void main (String[] args)
+	{
+		new ChartManageClient().start();
+	}
+	
+	public void start()
+	{
+		try
+		{
+			socket = new Socket(serverIp, 6000);
+			System.out.println("서버 접속에 성공했습니다. 지부를 입력해주세요.");
+			Scanner s = new Scanner(System.in);
+			host = s.nextLine();
+			
+			ClientReceiver clientReceiver = new ClientReceiver(socket);
+			ClientSender clientSender = new ClientSender(socket);
+			
+			clientReceiver.start();
+			clientSender.start();
+		}
+		catch (IOException e)
+		{
+			
+		}
+		
+		
+	}
+	
+	class ClientReceiver extends Thread
+	{
+		Socket socket;
+		DataInputStream dis;
+		
+		public ClientReceiver(Socket socket)
+		{
+			this.socket = socket;
+			try
+			{
+				dis = new DataInputStream(socket.getInputStream());
+			}
+			catch (IOException e)
+			{
+				System.out.println("ddddd");
+			}
+			
+		}
+		
+		public void run()
+		{
+			while(dis != null)
+			{
+				try
+				{
+					System.out.println(dis.readUTF());
+					
+				}
+				catch (IOException e)
+				{
+					
+				}
+				
+			}
+		}
+		
+		
+	}
+	
+	class ClientSender extends Thread
+	{
+		Socket socket;
+		DataOutputStream dos;
+		
+		public ClientSender(Socket socket)
+		{
+			this.socket = socket;
+			try
+			{
+				dos = new DataOutputStream(socket.getOutputStream());
+				dos.writeUTF(host);
+				System.out.println("성공적으로 서버와 연결되었습니다.");
+			}
+			catch (IOException e)
+			{
+				
+			}
+		}
+		public void  run()
+		{
+			Scanner s = new Scanner(System.in);
+			String reply = "";
+			
+			while(dos != null)
+			{
+				try
+				{
+					reply = s.nextLine();
+					if(reply.equals("exit"))
+					{
+						System.out.println(host+"지부가 송/수신 상태를 해제했습니다.");
+						System.exit(0);
+						
+					}
+				}
+				finally
+				{
+					
+				}
+				
+			}
+			
+		}
+	}
+}
