@@ -205,7 +205,8 @@ public class ChartManageClient {
 							}
 							dos.close();
 							fis.close();
-							socket.close();
+							
+							System.out.println("성공적으로 전송했습니다.");
 						} // try end
 						
 						catch (IOException e)
