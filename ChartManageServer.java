@@ -1,3 +1,4 @@
+
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -63,9 +64,10 @@ class ChartReceiver extends Thread
 	public void run()
 	{
 		String host = "";
-		while(true){
+		
 		try
 		{
+			while(true){
 			host = dis.readUTF();
 			System.out.println("HOST : "+host+" 지부가 파일 송/수신 대기 상태입니다.");
 			clients.put(host, dos);
@@ -86,6 +88,7 @@ class ChartReceiver extends Thread
 				dis.readUTF();
 			}
 		}
+		}
 		catch (IOException e)
 		{
 			
@@ -96,7 +99,7 @@ class ChartReceiver extends Thread
 			clients.remove(host);
 			System.out.println("현재 "+ clients.size()+"개의 지부가 대기 중입니다.");
 		}
-		}
+		
 		
 	}
 }
