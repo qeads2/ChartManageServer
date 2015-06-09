@@ -1,7 +1,15 @@
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.io.BufferedOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
 
 
 public class ChartManageServer {
@@ -71,6 +79,12 @@ class ChartReceiver extends Thread
 			host = dis.readUTF();
 			System.out.println("HOST : "+host+" 지부가 파일 송/수신 대기 상태입니다.");
 			clients.put(host, dos);
+		
+			if (socket.isConnected() == false)
+			{
+				System.out.println("@@@@@@@@@@@@@@@@");
+				clients.remove(host, dos);
+			}
 			
 			String fName = dis.readUTF();
 			FileOutputStream fos = new FileOutputStream("c:\\test\\" + fName);
@@ -83,10 +97,6 @@ class ChartReceiver extends Thread
 				Filesize += n;
 			}
 			
-			while(dis != null)
-			{
-				dis.readUTF();
-			}
 		}
 		}
 		catch (IOException e)
@@ -96,8 +106,16 @@ class ChartReceiver extends Thread
 		
 		finally
 		{
-			clients.remove(host);
+			Set key = clients.keySet();
+
 			System.out.println("현재 "+ clients.size()+"개의 지부가 대기 중입니다.");
+			System.out.println("========== 대기 중 지부 목록 ==========");
+			for (Iterator iterator = key.iterator(); iterator.hasNext();) 
+			{
+				String keyName = (String) iterator.next();
+				System.out.println(keyName);
+			}
+			System.out.println("=================================");
 		}
 		
 		
