@@ -110,9 +110,16 @@ public class ChartManageClient {
 					
 					if(reply == 0)
 					{
+						try
+						{
+						dos.writeUTF(host);
 						System.out.println(host+"지부가 송/수신 상태를 해제했습니다.");
 						System.exit(0);
-						
+						}
+						catch(IOException e)
+						{
+							System.out.println(e);
+						}
 					}
 					else if(reply == 1)
 					{
@@ -135,6 +142,7 @@ public class ChartManageClient {
 								System.out.println("비고를 입력해주세요.");
 								String etc = s.next();
 								number += 1;
+								
 								chart.add(new Chart(number, name, age, area, problem, etc));
 								System.out.println("성공적으로 등록을 완료했습니다.");
 								
@@ -151,7 +159,7 @@ public class ChartManageClient {
 								int rem = s.nextInt();
 								for (int i=0; i<chart.size(); i++)
 								{
-									chart.remove(i);
+									chart.remove(rem);
 								}
 								System.out.println("삭제를 완료했습니다.");
 								
@@ -165,10 +173,14 @@ public class ChartManageClient {
 								try
 								{
 								System.out.println("저장된 객체를 파일로 현재 로컬 경로에 저장합니다.");
-								ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("chart.dat"));
+								System.out.println("저장을 위해 파일 이름을 설정해주세요.");
+								String filename = s.next();
+								
+								ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename+".dat"));
 								oos.writeObject(chart);
 								oos.close();
 								}
+								
 								catch(IOException e)
 								{
 									System.out.println(e);
@@ -184,6 +196,7 @@ public class ChartManageClient {
 					{
 						try
 						{
+							
 							String fName ="";
 							System.out.println("서버로 차트를 전송합니다.");
 							System.out.println("차트의 파일이름을 확장자까지 입력해주세요.");
@@ -203,15 +216,21 @@ public class ChartManageClient {
 								dos.write(b, 0, n);
 								Filesize += n;
 							}
-							dos.close();
+							
 							fis.close();
 							
 							System.out.println("성공적으로 전송했습니다.");
 						} // try end
 						
 						catch (IOException e)
+						
 						{
 							System.out.println(e);
+						}
+						finally
+						{
+							
+							
 						}
 					}
 				}
