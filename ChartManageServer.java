@@ -1,4 +1,5 @@
-
+import javax.swing.JFrame;
+import java.awt.BorderLayout;
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -11,20 +12,140 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.JLabel;
+import java.awt.Color;
+import javax.swing.JButton;
+import javax.swing.JTextArea;
+import javax.swing.JTable;
+import javax.swing.JScrollBar;
+import javax.swing.AbstractAction;
+import java.awt.event.ActionEvent;
+import javax.swing.Action;
+import java.awt.event.ActionListener;
+import javax.swing.JTextPane;
+import java.awt.SystemColor;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
-public class ChartManageServer {
+
+public class ChartManageServer extends JFrame {
 	private HashMap<String, DataOutputStream> clients;
 	private ServerSocket serverSocket;
+	private JTextField textField;
+	private JTextField textField_1;
+	private JFrame help_jframe;
+	//private JTextField textField;
+	//private final JTable table = new JTable();
+	
+	private void initComponents()
+	{
+		/*
+		JFrame frame;
+		JPanel east_panel;
+		JTextField printWindow;
+		
+		frame = new JFrame("CHART MANAGE SERVICE -SERVER");
+		east_panel = new JPanel();
+		//printWindow = new JTextField("0");
+		
+		frame.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+		
+		
+		//printWindow.setHorizontalAlignment(JTextField.RIGHT);   // 우측정렬
+		//printWindow.setEditable(false);
+		//printWindow.setVisible(true);
+		
+		frame.setSize(486,300);
+		frame.getContentPane().setLayout(null);
+		
+		textField = new JTextField();
+		textField.setBounds(12, 231, 446, 21);
+		frame.getContentPane().add(textField);
+		textField.setColumns(10);
+		
+		JButton btnNewButton = new JButton("\uCC28\uD2B8 \uD1B5\uD569");
+		
+		
+		btnNewButton.setBounds(371, 10, 87, 44);
+		frame.getContentPane().add(btnNewButton);
+		
+		JButton button = new JButton("\uCC28\uD2B8 \uBAA9\uB85D");
+		button.setBounds(371, 64, 87, 47);
+		frame.getContentPane().add(button);
+		
+		JButton button_1 = new JButton("\uCD08\uAE30\uD654");
+		button_1.setBounds(371, 121, 87, 46);
+		frame.getContentPane().add(button_1);
+		
+		JButton button_2 = new JButton("\uB3C4\uC6C0\uB9D0");
+		button_2.setBounds(371, 177, 87, 44);
+		frame.getContentPane().add(button_2);
+		table.setBounds(12, 10, 347, 211);
+		frame.getContentPane().add(table);
+		frame.setVisible(true);
+		*/
+		
+	}
+	
 	
 	public static void main(String[] args)
 	{
+		
 		new ChartManageServer().start();
 	}
 	
 	public ChartManageServer()
 	{
+		setTitle("CHART MANAGE SERVICE (SERVER)");
+		getContentPane().setLayout(null);
+		
+		textField_1 = new JTextField();
+		textField_1.setBounds(12, 231, 560, 21);
+		getContentPane().add(textField_1);
+		textField_1.setColumns(10);
+		
+		JTextPane textPane = new JTextPane();
+		textPane.setEditable(false);
+		textPane.setBounds(12, 10, 454, 211);
+		getContentPane().add(textPane);
+		
+		JButton btnNewButton = new JButton("\uCC28\uD2B8 \uD1B5\uD569");
+		btnNewButton.setBounds(478, 10, 94, 36);
+		getContentPane().add(btnNewButton);
+		
+		JButton button = new JButton("\uCC28\uD2B8 \uBAA9\uB85D");
+		button.setBounds(478, 66, 94, 36);
+		getContentPane().add(button);
+		
+		JButton button_1 = new JButton("\uCD08\uAE30\uD654");
+		button_1.setBounds(478, 123, 94, 36);
+		getContentPane().add(button_1);
+		
+		JButton button_2 = new JButton("\uB3C4\uC6C0\uB9D0");
+		button_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JFrame help_frame = new JFrame();
+				
+				
+			}
+		});
+		button_2.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				
+			}
+		});
+		button_2.setBounds(478, 181, 94, 36);
+		getContentPane().add(button_2);
+		
+		
 		clients = new HashMap<String, DataOutputStream>();
 		Collections.synchronizedMap(clients);
+		
+		initComponents();
 	}
 	public void start()
 	{
@@ -121,4 +242,12 @@ class ChartReceiver extends Thread
 		
 	}
 }
+	private class SwingAction extends AbstractAction {
+		public SwingAction() {
+			putValue(NAME, "SwingAction");
+			putValue(SHORT_DESCRIPTION, "Some short description");
+		}
+		public void actionPerformed(ActionEvent e) {
+		}
+	}
 }
