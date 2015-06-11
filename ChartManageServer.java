@@ -1,5 +1,8 @@
-import javax.swing.JFrame;
-import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -12,23 +15,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.JLabel;
-import java.awt.Color;
-import javax.swing.JButton;
-import javax.swing.JTextArea;
-import javax.swing.JTable;
-import javax.swing.JScrollBar;
 import javax.swing.AbstractAction;
-import java.awt.event.ActionEvent;
-import javax.swing.Action;
-import java.awt.event.ActionListener;
-import javax.swing.JTextPane;
-import java.awt.SystemColor;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 
 public class ChartManageServer extends JFrame {
@@ -36,12 +27,92 @@ public class ChartManageServer extends JFrame {
 	private ServerSocket serverSocket;
 	private JTextField textField;
 	private JTextField textField_1;
+	private JFrame main_frame;
 	private JFrame help_jframe;
+	private JTextArea ta;
 	//private JTextField textField;
 	//private final JTable table = new JTable();
 	
 	private void initComponents()
-	{
+	{         
+		JFrame main_frame = new JFrame();
+		Container panel = main_frame.getContentPane();
+		
+		main_frame.setTitle("CHART MANAGE SERVICE (SERVER)");
+		main_frame.setResizable(false);
+		main_frame.setVisible(true);
+		main_frame.setSize(585,276);
+		main_frame.getContentPane().setLayout(null);
+		getContentPane().setVisible(true);
+		
+		textField_1 = new JTextField();
+		textField_1.setBounds(12, 216, 560, 21);
+		panel.add(textField_1);
+		textField_1.setText("........");
+		
+		/*JTextArea ta = new JTextArea("hello", 7, 20);
+		ta.setBounds(12, 10, 454, 207);
+		panel.add(new JScrollPane(ta));*/
+		
+		JButton btnNewButton = new JButton("\uCC28\uD2B8 \uD1B5\uD569");
+		btnNewButton.setFont(new Font("굴림", Font.PLAIN, 11));
+		btnNewButton.setBounds(478, 14, 85, 31);
+		panel.add(btnNewButton);
+		
+		JButton button = new JButton("\uCC28\uD2B8 \uBAA9\uB85D");
+		button.setFont(new Font("굴림", Font.PLAIN, 11));
+		button.setBounds(478, 64, 85, 31);
+		panel.add(button);
+		
+		JButton button_1 = new JButton("\uCD08\uAE30\uD654");
+		button_1.setFont(new Font("굴림", Font.PLAIN, 11));
+		button_1.setBounds(478, 114, 85, 31);
+		panel.add(button_1);
+		
+		JButton button_2 = new JButton("도움말");
+		button_2.setFont(new Font("굴림", Font.PLAIN, 11));
+		button_2.addMouseListener(new MouseAdapter() 
+		{
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				JFrame help_jframe = new JFrame();
+				help_jframe.setTitle("도움말");
+				help_jframe.setResizable(false);
+				help_jframe.setVisible(true);
+				help_jframe.setSize(300,300);
+				help_jframe.getContentPane().setLayout(null);
+			}
+		}
+		);
+		
+		button_2.setBounds(478, 164, 85, 31);
+		panel.add(button_2);
+		
+		JTextArea textArea = new JTextArea();
+		textArea.setBounds(12, 10, 454, 192);
+		textArea.setEditable(false);
+		textArea.setLineWrap(true);
+		main_frame.getContentPane().add(textArea);
+		
+		
+		try{
+			Socket socket = null;
+			serverSocket = new ServerSocket(6000);
+			//System.out.println("차트 통합 관리 서버가 기동중입니다.");
+			textArea.append("차트 통합 관리 서버가 기동중입니다...\n");
+			
+			while(true)
+			{
+			socket = serverSocket.accept();
+			//System.out.println("호스트와 연결 완료.");
+			textArea.append("호스트와 연결 완료...\n");
+			
+			ChartReceiver fr = new ChartReceiver(socket); //클라이언트와의
+			fr.start();
+			}
+		} catch (IOException e){
+			e.printStackTrace();
+		}
 		/*
 		JFrame frame;
 		JPanel east_panel;
@@ -76,6 +147,7 @@ public class ChartManageServer extends JFrame {
 		button.setBounds(371, 64, 87, 47);
 		frame.getContentPane().add(button);
 		
+		
 		JButton button_1 = new JButton("\uCD08\uAE30\uD654");
 		button_1.setBounds(371, 121, 87, 46);
 		frame.getContentPane().add(button_1);
@@ -99,72 +171,13 @@ public class ChartManageServer extends JFrame {
 	
 	public ChartManageServer()
 	{
-		setTitle("CHART MANAGE SERVICE (SERVER)");
-		getContentPane().setLayout(null);
-		
-		textField_1 = new JTextField();
-		textField_1.setBounds(12, 231, 560, 21);
-		getContentPane().add(textField_1);
-		textField_1.setColumns(10);
-		
-		JTextPane textPane = new JTextPane();
-		textPane.setEditable(false);
-		textPane.setBounds(12, 10, 454, 211);
-		getContentPane().add(textPane);
-		
-		JButton btnNewButton = new JButton("\uCC28\uD2B8 \uD1B5\uD569");
-		btnNewButton.setBounds(478, 10, 94, 36);
-		getContentPane().add(btnNewButton);
-		
-		JButton button = new JButton("\uCC28\uD2B8 \uBAA9\uB85D");
-		button.setBounds(478, 66, 94, 36);
-		getContentPane().add(button);
-		
-		JButton button_1 = new JButton("\uCD08\uAE30\uD654");
-		button_1.setBounds(478, 123, 94, 36);
-		getContentPane().add(button_1);
-		
-		JButton button_2 = new JButton("\uB3C4\uC6C0\uB9D0");
-		button_2.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				JFrame help_frame = new JFrame();
-				
-				
-			}
-		});
-		button_2.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				
-			}
-		});
-		button_2.setBounds(478, 181, 94, 36);
-		getContentPane().add(button_2);
-		
-		
 		clients = new HashMap<String, DataOutputStream>();
 		Collections.synchronizedMap(clients);
-		
 		initComponents();
 	}
 	public void start()
 	{
-		try{
-			Socket socket = null;
-			serverSocket = new ServerSocket(6000);
-			System.out.println("차트 통합 관리 서버가 기동중입니다.");
-			
-			while(true)
-			{
-			socket = serverSocket.accept();
-			System.out.println("호스트와 연결 완료.");
-			
-			ChartReceiver fr = new ChartReceiver(socket); //클라이언트와의
-			fr.start();
-			}
-		} catch (IOException e){
-			e.printStackTrace();
-		}
+		
 	}
 
 
