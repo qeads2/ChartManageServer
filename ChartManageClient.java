@@ -1,24 +1,97 @@
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.awt.Container;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 
-public class ChartManageClient {
-	private String host;
-	private Socket socket;
-	private String serverIp = "127.0.0.1";
+public class ChartManageClient extends JFrame implements ActionListener{
 	
-	public static void main (String[] args)
-	{
-		new ChartManageClient().start();
-	}
+	private JFrame main_frame;
+	private JFrame menu1_frame;
 	
-	public void start()
-	{
+	public ChartManageClient() {
+		main_frame = new JFrame();
+		main_frame.setTitle("CHART MANAGE SERVICE (CLIENT)");
+		
+		Container panel = main_frame.getContentPane();
+		main_frame.setVisible(true);
+		main_frame.setSize(450,290);
+		main_frame.getContentPane().setLayout(null);
+		
+		JTextArea textArea = new JTextArea(15, 50);
+		textArea.setBounds(12, 10, 410, 156);
+		textArea.setVisible(true);
+		textArea.setLineWrap(true);
+		panel.add(textArea);
+		textArea.append("");
+		
+		//textArea.setEditable(false);
+		
+		/* 스크롤 팬 등록..?
+		JScrollPane main_scroll = new JScrollPane(textArea);
+		main_scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		main_scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		
+		main_frame.add(main_scroll);
+		
+		panel.add(textArea);
+		*/
+		JButton btnNewButton = new JButton("\uCC28\uD2B8 \uD3B8\uC9D1");
+		btnNewButton.setFont(new Font("굴림", Font.PLAIN, 11));
+		btnNewButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				menu1_frame = new JFrame();
+				menu1_frame.setTitle("CHART MODIFY");
+				menu1_frame.setResizable(false);
+				menu1_frame.setSize(250,250);
+				menu1_frame.setVisible(true);
+				menu1_frame.getContentPane().setLayout(null);
+				
+			}
+		});
+		btnNewButton.setBounds(22, 206, 89, 33);
+		panel.add(btnNewButton);
+		
+		JButton button_2 = new JButton("\uCC28\uD2B8 \uC804\uC1A1");
+		button_2.setFont(new Font("굴림", Font.PLAIN, 11));
+		button_2.setBounds(174, 206, 89, 33);
+		panel.add(button_2);
+		
+		JButton button = new JButton("\uC885\uB8CC");
+		button.setFont(new Font("굴림", Font.PLAIN, 11));
+		button.setBounds(320, 206, 89, 33);
+		panel.add(button);
+		
+		textField = new JTextField();
+		textField.setBounds(12, 176, 410, 21);
+		main_frame.getContentPane().add(textField);
+		textField.setColumns(10);
+		textField.addActionListener(this);
+		
 		try
 		{
 			socket = new Socket(serverIp, 6000);
-			System.out.println("서버 접속에 성공했습니다. 지부를 입력해주세요.");
+			//System.out.println("서버 접속에 성공했습니다. 지부를 입력해주세요.");
+			textArea.append("서버 접속에 성공했습니다.\n");
+			textArea.append("접속하신 지부를 입력해주세요.\n");
 			Scanner s = new Scanner(System.in);
 			host = s.nextLine();
 			
@@ -32,6 +105,35 @@ public class ChartManageClient {
 		{
 			
 		}
+		
+	}
+	
+	//
+	public void actionPerformed(ActionEvent e)
+	{
+		if(e.getSource() == textField)
+		{
+			String input = textField.getText();
+			host = input;
+			textField.setText("");
+			//textField.requestFocus();
+			//textArea.setCaretPosition(textArea.getDocument().getLength);
+		}
+	}
+	
+	
+	private String host;
+	private Socket socket;
+	private String serverIp = "127.0.0.1";
+	private JTextField textField;
+	
+	public static void main (String[] args)
+	{
+		new ChartManageClient().start();
+	}
+	
+	public void start()
+	{
 		
 		
 	}
