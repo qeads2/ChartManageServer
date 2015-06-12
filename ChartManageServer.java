@@ -30,6 +30,8 @@ public class ChartManageServer extends JFrame {
 	private JFrame main_frame;
 	private JFrame help_jframe;
 	private JTextArea ta;
+	JTextArea textArea = new JTextArea(15, 50);
+	//public JTextArea textArea;
 	//private JTextField textField;
 	//private final JTable table = new JTable();
 	
@@ -88,7 +90,7 @@ public class ChartManageServer extends JFrame {
 		button_2.setBounds(478, 164, 85, 31);
 		panel.add(button_2);
 		
-		JTextArea textArea = new JTextArea();
+		
 		textArea.setBounds(12, 10, 454, 192);
 		textArea.setEditable(false);
 		textArea.setLineWrap(true);
@@ -183,11 +185,17 @@ public class ChartManageServer extends JFrame {
 
 class ChartReceiver extends Thread
 {
+	
 	Socket socket = null;
 	DataInputStream dis = null;
 	DataOutputStream dos = null;
 	FileOutputStream fos = null;
 	BufferedOutputStream bos = null;
+	//JTextArea textArea = new JTextArea();
+	
+	
+	 
+	
 	public ChartReceiver(Socket socket)
 	{
 		this.socket = socket;
@@ -205,13 +213,17 @@ class ChartReceiver extends Thread
 
 	public void run()
 	{
-		String host = "";
 		
+		String host = "";
 		try
 		{
+			
 			while(true){
+				
 			host = dis.readUTF();
-			System.out.println("HOST : "+host+" 지부가 파일 송/수신 대기 상태입니다.");
+			
+			//System.out.println("HOST : "+host+" 지부가 파일 송/수신 대기 상태입니다.");
+			textArea.append("HOST : "+host+" 지부가 파일 송/수신 대기 상태입니다.");
 			clients.put(host, dos);
 		
 			if (socket.isConnected() == false)
@@ -235,7 +247,7 @@ class ChartReceiver extends Thread
 		}
 		catch (IOException e)
 		{
-			
+			e.printStackTrace();
 		}
 		
 		finally
