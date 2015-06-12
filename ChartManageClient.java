@@ -17,16 +17,40 @@ import java.util.Scanner;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 
 public class ChartManageClient extends JFrame implements ActionListener{
 	
+	private JFrame first_frame;
 	private JFrame main_frame;
 	private JFrame menu1_frame;
+	JTextArea textArea = new JTextArea(15, 50);
+	JTextField input = new JTextField();
+	JLabel subtitle = new JLabel();
 	
-	public ChartManageClient() {
+	public ChartManageClient() 
+	{
+		first_frame = new JFrame();
+		first_frame.setTitle("INFO REGISTRATION");
+		Container first_panel = first_frame.getContentPane();
+		first_frame.setVisible(true);
+		first_frame.setResizable(false);
+		first_frame.setSize(280, 100);
+		first_frame.getContentPane().setLayout(null);
+		
+		
+		input.setVisible(true);
+		input.setBounds(105,25,135,20);
+		first_panel.add(input);
+		
+		subtitle.setVisible(true);
+		subtitle.setBounds(35,25,100,20);
+		first_panel.add(subtitle);
+		subtitle.setText("지부명");
+		
 		main_frame = new JFrame();
 		main_frame.setTitle("CHART MANAGE SERVICE (CLIENT)");
 		
@@ -35,7 +59,7 @@ public class ChartManageClient extends JFrame implements ActionListener{
 		main_frame.setSize(450,290);
 		main_frame.getContentPane().setLayout(null);
 		
-		JTextArea textArea = new JTextArea(15, 50);
+		
 		textArea.setBounds(12, 10, 410, 156);
 		textArea.setVisible(true);
 		textArea.setLineWrap(true);
@@ -92,8 +116,9 @@ public class ChartManageClient extends JFrame implements ActionListener{
 			//System.out.println("서버 접속에 성공했습니다. 지부를 입력해주세요.");
 			textArea.append("서버 접속에 성공했습니다.\n");
 			textArea.append("접속하신 지부를 입력해주세요.\n");
-			Scanner s = new Scanner(System.in);
-			host = s.nextLine();
+			//Scanner s = new Scanner(System.in);
+			//host = s.nextLine();
+			
 			
 			ClientReceiver clientReceiver = new ClientReceiver(socket);
 			ClientSender clientSender = new ClientSender(socket);
@@ -113,8 +138,7 @@ public class ChartManageClient extends JFrame implements ActionListener{
 	{
 		if(e.getSource() == textField)
 		{
-			String input = textField.getText();
-			host = input;
+			host = textField.getText();
 			textField.setText("");
 			//textField.requestFocus();
 			//textArea.setCaretPosition(textArea.getDocument().getLength);
@@ -125,7 +149,7 @@ public class ChartManageClient extends JFrame implements ActionListener{
 	private String host;
 	private Socket socket;
 	private String serverIp = "127.0.0.1";
-	private JTextField textField;
+	public JTextField textField;
 	
 	public static void main (String[] args)
 	{
@@ -140,6 +164,7 @@ public class ChartManageClient extends JFrame implements ActionListener{
 	
 	class ClientReceiver extends Thread
 	{
+		
 		Socket socket;
 		DataInputStream dis;
 		
@@ -179,10 +204,13 @@ public class ChartManageClient extends JFrame implements ActionListener{
 	
 	class ClientSender extends Thread
 	{
+		private ChartManageClient text;
 		int number;
 		Socket socket;
 		DataOutputStream dos;
 		ArrayList<Chart> chart = new ArrayList<>();
+		
+		
 		
 		public ClientSender(Socket socket)
 		{
@@ -191,7 +219,8 @@ public class ChartManageClient extends JFrame implements ActionListener{
 			{
 				dos = new DataOutputStream(socket.getOutputStream());
 				dos.writeUTF(host);
-				System.out.println("성공적으로 서버와 연결되었습니다.");
+				//System.out.println("성공적으로 서버와 연결되었습니다.");
+				textArea.append("성공적으로 서버와 연결되었습니다.");
 			}
 			catch (IOException e)
 			{
