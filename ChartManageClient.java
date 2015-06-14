@@ -1,39 +1,36 @@
-import java.awt.Container;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
+import java.net.*;
+import java.text.*;
+import java.util.*;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import javax.swing.*;
+import javax.swing.table.*;
 
 
 public class ChartManageClient extends JFrame implements ActionListener{
 	
+	DataOutputStream dos;
+	//=========프레임 류==========
 	private JFrame first_frame;
 	private JFrame main_frame;
 	private JFrame menu1_frame;
-	JTextArea textArea = new JTextArea(15, 50);
+	JTextArea textArea = new JTextArea();
 	JTextField input = new JTextField();
 	JLabel subtitle = new JLabel();
+	//=========차트 편집 =========
+	JTable fileTable;
+	JScrollPane list;
+	JPanel listPanel;
+	Vector<String> column = new Vector<String>();
+	DefaultTableModel model;
+	Vector<String> row;
+	//=========================
 	
 	public ChartManageClient() 
 	{
-		first_frame = new JFrame();
+		first_frame = new JFrame(); // 클라이언트 초기 지부명 입력 윈도우
 		first_frame.setTitle("INFO REGISTRATION");
 		Container first_panel = first_frame.getContentPane();
 		first_frame.setVisible(true);
@@ -42,29 +39,26 @@ public class ChartManageClient extends JFrame implements ActionListener{
 		first_frame.getContentPane().setLayout(null);
 		
 		
-		input.setVisible(true);
+		input.setVisible(true); // 지부명 입력 텍스트 필드
 		input.setBounds(105,25,135,20);
 		first_panel.add(input);
 		
-		subtitle.setVisible(true);
+		
+		
+		
+		
+		subtitle.setVisible(true); // 지부명 입력 글씨
 		subtitle.setBounds(35,25,100,20);
 		first_panel.add(subtitle);
 		subtitle.setText("지부명");
 		
-		main_frame = new JFrame();
+		main_frame = new JFrame(); // 클라이언트 메인 윈도우
 		main_frame.setTitle("CHART MANAGE SERVICE (CLIENT)");
 		
 		Container panel = main_frame.getContentPane();
 		main_frame.setVisible(true);
 		main_frame.setSize(450,290);
 		main_frame.getContentPane().setLayout(null);
-		
-		
-		textArea.setBounds(12, 10, 410, 156);
-		textArea.setVisible(true);
-		textArea.setLineWrap(true);
-		panel.add(textArea);
-		textArea.append("");
 		
 		//textArea.setEditable(false);
 		
@@ -77,47 +71,113 @@ public class ChartManageClient extends JFrame implements ActionListener{
 		
 		panel.add(textArea);
 		*/
-		JButton btnNewButton = new JButton("\uCC28\uD2B8 \uD3B8\uC9D1");
+		
+		JButton btnNewButton = new JButton("\uCC28\uD2B8 \uD3B8\uC9D1"); // 편집 버튼
 		btnNewButton.setFont(new Font("굴림", Font.PLAIN, 11));
 		btnNewButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				
+				
+				
 				menu1_frame = new JFrame();
 				menu1_frame.setTitle("CHART MODIFY");
 				menu1_frame.setResizable(false);
-				menu1_frame.setSize(250,250);
+				menu1_frame.setSize(500,500);
 				menu1_frame.setVisible(true);
 				menu1_frame.getContentPane().setLayout(null);
 				
+				Container menu1 = menu1_frame.getContentPane();
+				column.addElement("No");
+				column.addElement("File");
+				column.addElement("Date");
+				
+				FileList filelist = new FileList();
+				
+				row = new Vector<String>();
+				//=============================
+				SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");  
+				File file = new File("C:\\test\\");
+				file = sortFileList(file,COMPARETYPE_DATE);
+				String modi_date = null;
+				String[] ex_name = file.list(new DatFileFilter(".dat"));
+				for(int i=0; i<ex_name.length; i++)
+				{
+					File find_file = new File("C:\\test\\"+ex_name[i]);
+					modi_date = sdf.format(find_file.lastModified()); 
+					System.out.println(modi_date);
+				}
+				//=============================
+				
+				model = new DefaultTableModel(column,0);
+				fileTable = new JTable(model);
+				list = new JScrollPane(fileTable);
+				
+				for(int i=0; i<ex_name.length; i++)
+				{
+					System.out.println(ex_name[i]);
+					row.addElement(Integer.toString(i+1));
+					row.addElement(ex_name[i]);
+					row.addElement(modi_date);
+					
+					
+				}
+				model.addRow(row);
+				
+				list.setBounds(50,50,300,400);
+				fileTable.getColumn("No").setPreferredWidth(6);
+				menu1.add(list);
+				
+				
+				
+				/*
+				listPanel = new JPanel(new BorderLayout());
+				listPanel.setLayout(null);
+				
+				listPanel.add(list, BorderLayout.CENTER);
+				listPanel.setSize(300,300);
+				
+				menu1.add(listPanel);
+				
+				add(listPanel);
+				*/
+				column.removeElement("No");
+				column.removeElement("File");
+				column.removeElement("Date");
+				
+				
 			}
 		});
+		
 		btnNewButton.setBounds(22, 206, 89, 33);
 		panel.add(btnNewButton);
 		
-		JButton button_2 = new JButton("\uCC28\uD2B8 \uC804\uC1A1");
+		JButton button_2 = new JButton("\uCC28\uD2B8 \uC804\uC1A1"); // 전송 버튼
 		button_2.setFont(new Font("굴림", Font.PLAIN, 11));
 		button_2.setBounds(174, 206, 89, 33);
 		panel.add(button_2);
 		
-		JButton button = new JButton("\uC885\uB8CC");
+		JButton button = new JButton("\uC885\uB8CC"); // 종료 버튼
 		button.setFont(new Font("굴림", Font.PLAIN, 11));
 		button.setBounds(320, 206, 89, 33);
 		panel.add(button);
 		
-		textField = new JTextField();
+		textField = new JTextField(); // 메인 윈도우 입력창
 		textField.setBounds(12, 176, 410, 21);
 		main_frame.getContentPane().add(textField);
 		textField.setColumns(10);
-		textField.addActionListener(this);
+		
+		
+		textArea.setBounds(12, 10, 410, 154);
+		main_frame.getContentPane().add(textArea);
+		//textField.addActionListener(this);     java.lang.NullPointerException
 		
 		try
 		{
 			socket = new Socket(serverIp, 6000);
-			//System.out.println("서버 접속에 성공했습니다. 지부를 입력해주세요.");
-			textArea.append("서버 접속에 성공했습니다.\n");
-			textArea.append("접속하신 지부를 입력해주세요.\n");
 			//Scanner s = new Scanner(System.in);
 			//host = s.nextLine();
+			input.addActionListener(this);
 			
 			
 			ClientReceiver clientReceiver = new ClientReceiver(socket);
@@ -136,12 +196,32 @@ public class ChartManageClient extends JFrame implements ActionListener{
 	//
 	public void actionPerformed(ActionEvent e)
 	{
+		DataOutputStream dos;
 		if(e.getSource() == textField)
 		{
 			host = textField.getText();
 			textField.setText("");
 			//textField.requestFocus();
 			//textArea.setCaretPosition(textArea.getDocument().getLength);
+		}
+		else if (e.getSource() == input)
+		{
+			host = input.getText();
+			input.setText("");
+			
+			try
+			{
+				dos = new DataOutputStream(socket.getOutputStream());
+				dos.writeUTF(host);
+				//System.out.println("성공적으로 서버와 연결되었습니다.");
+				textArea.append("성공적으로 서버와 연결되었습니다.");
+				first_frame.dispose();
+			}
+			
+			catch(IOException a)
+			{
+				a.printStackTrace();
+			}
 		}
 	}
 	
@@ -210,22 +290,9 @@ public class ChartManageClient extends JFrame implements ActionListener{
 		DataOutputStream dos;
 		ArrayList<Chart> chart = new ArrayList<>();
 		
-		
-		
 		public ClientSender(Socket socket)
 		{
 			this.socket = socket;
-			try
-			{
-				dos = new DataOutputStream(socket.getOutputStream());
-				dos.writeUTF(host);
-				//System.out.println("성공적으로 서버와 연결되었습니다.");
-				textArea.append("성공적으로 서버와 연결되었습니다.");
-			}
-			catch (IOException e)
-			{
-				
-			}
 		}
 		public void  run()
 		{
@@ -279,6 +346,7 @@ public class ChartManageClient extends JFrame implements ActionListener{
 								
 								
 							}
+							
 							else if (menu == 2)
 							{
 								System.out.println("차트 정보를 삭제합니다.");
@@ -287,7 +355,9 @@ public class ChartManageClient extends JFrame implements ActionListener{
 									System.out.println(chart.get(i).toString());
 								}
 								System.out.println("정보를 삭제할 환자의 번호를 입력해주세요.");
+								
 								int rem = s.nextInt();
+								
 								for (int i=0; i<chart.size(); i++)
 								{
 									chart.remove(rem);
