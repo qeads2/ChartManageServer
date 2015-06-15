@@ -223,7 +223,7 @@ class ChartReceiver extends Thread
 			host = dis.readUTF();
 			
 			//System.out.println("HOST : "+host+" 지부가 파일 송/수신 대기 상태입니다.");
-			textArea.append("HOST : "+host+" 지부가 파일 송/수신 대기 상태입니다.");
+			textArea.append("HOST : "+host+" 지부가 파일 송/수신 대기 상태입니다.\n");
 			clients.put(host, dos);
 		
 			if (socket.isConnected() == false)
